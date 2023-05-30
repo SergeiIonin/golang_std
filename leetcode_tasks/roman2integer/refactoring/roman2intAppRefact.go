@@ -73,7 +73,7 @@ func romanToInt(s string) int {
 		if cur == 3 {
 			if currentRune != 'M' {
 				accum += len(accumArray) * 1000
-				accumArray = cleanArray(accumArray)
+				accumArray = make([]rune, 0, 4)
 				if currentRune == 'D' || currentRune == 'C' {
 					cur = 2
 				} else if currentRune == 'L' || currentRune == 'X' {
@@ -89,7 +89,7 @@ func romanToInt(s string) int {
 		if cur == 2 {
 			if currentRune != 'C' && currentRune != 'D' && currentRune != 'M' {
 				accum += convert(accumArray, 'C', 'D', 'M', 100)
-				accumArray = cleanArray(accumArray)
+				accumArray = make([]rune, 0, 4)
 				if currentRune == 'X' || currentRune == 'L' {
 					cur = 1
 				} else {
@@ -103,7 +103,7 @@ func romanToInt(s string) int {
 		if cur == 1 {
 			if currentRune != 'X' && currentRune != 'L' && currentRune != 'C' {
 				accum += convert(accumArray, 'X', 'L', 'C', 10)
-				accumArray = cleanArray(accumArray)
+				accumArray = make([]rune, 0, 4)
 				cur = 0
 			}
 			index++
