@@ -5,119 +5,107 @@ import (
 )
 
 func main() {
-	arrayInt := []int{1, 54, 135, 8, 0, 89}
-	maxElem := max(arrayInt)
-	fmt.Println("max elem = ", maxElem)
-	testHeights0 := []int{1370, 4873, 2981, 478, 4760, 5191, 6872, 6665, 3327, 3106, 9828, 9991, 208, 1667, 8408, 6876, 4872, 320, 1675, 747,
-		7706, 4165, 1579, 2988, 1126, 2093, 1313, 5300, 2111, 6948, 6838, 9833, 1821, 6171, 310, 2932, 7713, 3533, 9596, 1039, 6639, 5775,
-		1030, 3198, 7441, 5789, 6425, 8665, 6108, 8099, 9411, 3814, 8616, 989, 6801, 9741, 9433, 4465, 5040, 1544, 1412, 8230, 7728, 3232,
-		4400, 4389, 2515, 8464, 7922, 8463, 9503, 912, 589, 532, 461, 4382, 6320, 6885, 3046, 2427, 1335, 8808, 2592, 6302, 6149, 5744, 6043,
-		5581, 208, 7434, 3476, 1620, 2015, 7555, 1203, 2766, 1944, 3718, 1230, 6217}
-	res0 := maxArea(testHeights0)
-	fmt.Println("res = ", res0)
-	fmt.Println("--------")
+	input0 := []int{1, 8, 6, 2, 5, 4, 8, 3, 7} // 49
+	input1 := []int{1, 1}                      // 1
+	input2 := []int{1, 5, 16, 16, 5, 3}        // 16
+	input3 := []int{1, 5, 16, 14, 5, 3}        // 15
 
-	testHeights1 := []int{2, 5, 7, 4, 1, 8} // 12
-	res1 := maxArea(testHeights1)
-	fmt.Println("res1 = ", res1)
-	fmt.Println("--------")
+	a0 := maxArea(input0)
+	a1 := maxArea(input1)
+	a2 := maxArea(input2)
+	a3 := maxArea(input3)
 
-	testHeights2 := []int{0, 5, 7, 4, 6, 8} // 20
-	res2 := maxArea(testHeights2)
-	fmt.Println("res2 = ", res2)
-	fmt.Println("--------")
+	fmt.Println("a0 = ", a0)
+	fmt.Println("a1 = ", a1)
+	fmt.Println("a2 = ", a2)
+	fmt.Println("a3 = ", a3)
+
 }
 
 // https://leetcode.com/problems/container-with-most-water/description/
 
+// h = [1,8,6,2,5,4,8,3,7]
+// 		sorted0 = 8
+//		sorted1 = 8
+//		diff = 5
+//		s = min(sorted0, sorted1) * diff // 40
+//
+//
+
 func maxArea(height []int) int {
-	return int(getMaxSquare(height, 0))
-}
 
-type height []int
+	size := len(height)
+	visitedIndexes := make([]int, 0, size)
+	s := 0
 
-func (h height) Len() int {
-	return len(h)
-}
-func (h height) Swap(i, j int) {
-	h[i], h[j] = h[j], h[i]
-}
-func (h height) Less(i, j int) bool {
-	return h[i] < h[j]
-}
-
-func getMaxSquare(h height, square int) int {
-	if len(h) == 0 {
-		return square
-	} else if len(h) == 1 {
-		head := h[0]
-		if head >= square {
-			return head
-		} else {
-			return square
+	for i := 0; i < size; i++ {
+		max, index := maxWithIndex(height, &visitedIndexes)
+		fmt.Println("max = ", max)
+		fmt.Println("visitedIndexes = ", visitedIndexes)
+		if max*size < s {
+			continue
 		}
-	} else if len(h)*max(h) <= square {
-		return square
-	} else {
-		min := min(h)
-		indexMin := indexOf(h, min)
-		fmt.Println("indexMin = ", indexMin)
+		s = getS(height, max, index, s, size)
+	}
 
-		squareNew := min * len(h)
+	return s
+}
 
-		hLeft := h[:indexMin]
-		fmt.Println("hLeft = ", hLeft)
-		hRight := h[indexMin+1:]
-		fmt.Println("hRight = ", hRight)
-		if square < squareNew {
-			square = squareNew
-		}
-		fmt.Println("h square max so far = ", square)
-		left := getMaxSquare(hLeft, square)
-		right := getMaxSquare(hRight, square)
-		if left < right {
-			return right
-		} else {
-			return left
+func indexVisited(ind int, indexes []int) bool {
+	for i := 0; i < len(indexes); i++ {
+		if indexes[i] == ind {
+			return true
 		}
 	}
+	return false
 }
 
-func max(h []int) int {
-	len := len(h)
-	maxElem := h[0]
-	elem := maxElem
-	for i := 1; i < len; i++ {
-		elem = h[i]
-		if elem > maxElem {
-			maxElem = elem
-		}
+// current max among the elems which haven't been visited yet
+// it works but it's not enough fast
+func maxWithIndex(h []int, visitedIndexes *[]int) (max int, index int) {
+	index = 0
+	max = h[index]
+	size := len(h)
+	if size == 1 {
+		return
 	}
-	return maxElem
-}
-
-func min(h []int) int {
-	len := len(h)
-	minElem := h[0]
-	elem := minElem
-	for i := 1; i < len; i++ {
-		elem = h[i]
-		if elem < minElem {
-			minElem = elem
+	for i := 0; i < size; i++ {
+		if indexVisited(i, *visitedIndexes) {
+			continue
 		}
-	}
-	return minElem
-}
-
-func indexOf(h height, elem int) int {
-	index := -1
-	for i, current := range h {
-		if current == elem {
+		if max < h[i] {
+			max = h[i]
 			index = i
 		}
 	}
-	if index == -1 {
-		panic("elem wasn't found")
+	*visitedIndexes = append(*visitedIndexes, index)
+	return
+}
+
+func minOfTwo(left int, right int) int {
+	if left < right {
+		return left
+	} else {
+		return right
 	}
-	return index
+}
+
+func getS(h []int, max int, index int, sMax int, size int) (s int) {
+	sTemp := 0
+	s = sMax
+	fmt.Println("sBase = ", s)
+	for i, v := range h {
+		if index == i {
+			continue
+		}
+		sTemp = (index - i) * minOfTwo(max, v)
+		if sTemp < 0 {
+			sTemp = sTemp * (-1)
+		}
+		if sTemp > s {
+			s = sTemp
+		}
+	}
+	fmt.Println("s = ", s)
+	return s
 }
