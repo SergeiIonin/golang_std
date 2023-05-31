@@ -75,31 +75,44 @@ func maxArea(height []int) int {
 	var heightWithIndexes HeightIndexed
 	heightWithIndexes = make([]ElemWithIndex, size)
 
+	// todo keep only heightWithIndexes[i] != 0
+
 	for i, v := range height {
 		heightWithIndexes[i] = ElemWithIndex{elem: v, index: i}
 	}
 
 	sort.Sort(heightWithIndexes) // asdending order
+	heightWithIndexesFiltered := make([]ElemWithIndex, size)
+	j := 0
+	for _, v := range heightWithIndexes {
+		if v.elem != 0 {
+			heightWithIndexesFiltered[j] = v
+			j++
+		}
+	}
+
 	lenLeft := 0
 	lenRight := 0
-	var elemWithIndex ElemWithIndex
 
-	for i := 0; i < size; i++ {
-		elemWithIndex = heightWithIndexes[i]
+	for _, elemWithIndex := range heightWithIndexesFiltered {
 		el := elemWithIndex.elem
+		if el == 0 {
+			continue
+		}
 		ind := elemWithIndex.index
 
 		lenLeft = elemWithIndex.index
 		lenRight = size - lenLeft - 1
 
 		if lenLeft*el < s && lenRight*el < s {
-			break
+			continue
 		}
 
 		sCur := 0
 
-		for j, cur := range height {
-			if cur < el || ind == j {
+		for _, cur := range heightWithIndexesFiltered {
+			j := cur.index
+			if cur.elem < el || ind == j {
 				continue
 			}
 			sCur = abs(ind-j) * el
