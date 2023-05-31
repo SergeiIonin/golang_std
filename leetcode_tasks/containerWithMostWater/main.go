@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 )
 
@@ -69,53 +68,29 @@ func readInput() []int {
 
 func maxArea(height []int) int {
 
-	size := len(height)
+	//size := len(height)
 	s := 0
 
-	var heightWithIndexes HeightIndexed
-	heightWithIndexes = make([]ElemWithIndex, size)
+	for i := 0; i < len(height)-1; i++ {
+		elem := height[i]
 
-	// todo keep only heightWithIndexes[i] != 0
-
-	for i, v := range height {
-		heightWithIndexes[i] = ElemWithIndex{elem: v, index: i}
-	}
-
-	sort.Sort(heightWithIndexes) // asdending order
-	heightWithIndexesFiltered := make([]ElemWithIndex, size)
-	j := 0
-	for _, v := range heightWithIndexes {
-		if v.elem != 0 {
-			heightWithIndexesFiltered[j] = v
-			j++
-		}
-	}
-
-	lenLeft := 0
-	lenRight := 0
-
-	for _, elemWithIndex := range heightWithIndexesFiltered {
-		el := elemWithIndex.elem
-		if el == 0 {
-			continue
-		}
-		ind := elemWithIndex.index
-
-		lenLeft = elemWithIndex.index
-		lenRight = size - lenLeft - 1
-
-		if lenLeft*el < s && lenRight*el < s {
+		if elem == 0 {
 			continue
 		}
 
 		sCur := 0
-
-		for _, cur := range heightWithIndexesFiltered {
-			j := cur.index
-			if cur.elem < el || ind == j {
+		for j := (i + 1); j < len(height); j++ {
+			cur := height[j]
+			if cur == 0 {
 				continue
 			}
-			sCur = abs(ind-j) * el
+			h := 0
+			if cur < elem {
+				h = cur
+			} else {
+				h = elem
+			}
+			sCur = (j - i) * h
 			if sCur > s {
 				s = sCur
 			}
@@ -123,24 +98,6 @@ func maxArea(height []int) int {
 	}
 
 	return s
-
-}
-
-type ElemWithIndex struct {
-	elem  int
-	index int
-}
-
-type HeightIndexed []ElemWithIndex
-
-func (hi HeightIndexed) Len() int {
-	return len(hi)
-}
-func (hi HeightIndexed) Swap(i, j int) {
-	hi[i], hi[j] = hi[j], hi[i]
-}
-func (hi HeightIndexed) Less(i, j int) bool {
-	return hi[i].elem < hi[j].elem
 }
 
 func abs(v int) int {
