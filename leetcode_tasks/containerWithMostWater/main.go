@@ -79,83 +79,27 @@ func readInput(f *os.File) []int {
 //
 //
 
-// func maxArea(height []int) int {
-
-// 	size := len(height)
-// 	s := 0
-
-// 	var lenLeft, lenRight int
-
-// 	for ind, elem := range height {
-// 		if elem == 0 {
-// 			continue
-// 		}
-
-// 		lenLeft = ind
-// 		lenRight = size - lenLeft - 1
-
-// 		if lenLeft*elem < s && lenRight*elem < s {
-// 			continue
-// 		}
-
-// 		sCur := 0
-
-// 		for j, cur := range height {
-// 			if cur < elem || ind == j {
-// 				continue
-// 			}
-// 			sCur = abs(ind-j) * elem
-// 			if sCur > s {
-// 				s = sCur
-// 			}
-// 		}
-// 	}
-
-// 	return s
-
-// }
-
-// func abs(v int) int {
-// 	if v < 0 {
-// 		return -v
-// 	}
-// 	return v
-// }
-
 func maxArea(height []int) int {
 
-	size := len(height)
 	s := 0
+	sTemp := 0
 
-	for i, elem := range height {
-		if i == len(height)-1 {
-			break
+	i := 0
+	j := len(height) - 1
+
+	for i < j {
+		l := height[i]
+		r := height[j]
+		len := (j - i)
+		if l > r {
+			sTemp = len * r
+			j--
+		} else {
+			sTemp = len * l
+			i++
 		}
-
-		if elem == 0 {
-			continue
-		}
-
-		if i*elem < s && (size-i-1)*elem < s {
-			continue
-		}
-
-		sCur := 0
-		for j := (i + 1); j < len(height); j++ {
-			cur := height[j]
-			if cur == 0 {
-				continue
-			}
-			h := 0
-			if cur < elem {
-				h = cur
-			} else {
-				h = elem
-			}
-			sCur = (j - i) * h
-			if sCur > s {
-				s = sCur
-			}
+		if sTemp > s {
+			s = sTemp
 		}
 	}
 
