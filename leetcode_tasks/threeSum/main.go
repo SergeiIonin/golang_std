@@ -38,19 +38,39 @@ func main() {
 }
 
 func threeSum(nums []int) [][]int {
+	size := len(nums)
 
-	if len(nums) < 3 {
+	if size < 3 {
 		return [][]int{}
 	}
 
-	res := make([][]int, 0, len(nums))
+	res := make([][]int, 0, size)
 
 	sort.Ints(nums)
+
+	max := nums[size-1]
+
+	ind_pos := 0
+
+	for i := 0; i < size; i++ {
+		if nums[i] >= 0 {
+			ind_pos = i
+			break
+		}
+	}
+
+	min_pos := 0
+	for i := 0; i < size; i++ {
+		if nums[i] > 0 {
+			min_pos = nums[i]
+			break
+		}
+	}
 
 	i := 0
 	j := 1
 
-	for i < len(nums)-2 {
+	for i < size-2 {
 
 		zero := nums[i]
 		if zero > 0 {
@@ -58,12 +78,11 @@ func threeSum(nums []int) [][]int {
 		}
 		one := nums[j]
 
-		if j == len(nums)-1 {
-			if i >= len(nums)-3 {
+		if j == size-1 {
+			if i >= size-3 {
 				break
 			}
 			i++
-			nums = nums[:len(nums)-1]
 			j = i + 1
 			continue
 		}
@@ -88,7 +107,21 @@ func threeSum(nums []int) [][]int {
 			j = i + 1
 			continue
 		}
-		for k := j + 1; k < len(nums); k++ {
+		if two > max {
+			j++
+			continue
+		}
+		if two < min_pos && two > 0 {
+			j++
+			continue
+		}
+		var start int
+		if (j + 1) > ind_pos {
+			start = j + 1
+		} else {
+			start = ind_pos
+		}
+		for k := start; k < size; k++ {
 			elem := nums[k]
 			if elem > two {
 				break
