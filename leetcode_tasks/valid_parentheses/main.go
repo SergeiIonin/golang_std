@@ -65,14 +65,8 @@ func isValid(s string) bool {
 	if len(runes)%2 != 0 || len(runes) == 0 {
 		return false
 	}
-
-	visited := make(map[int]rune, len(runes)/2)
-
-	for i := range runes {
-		_, ok := visited[i]
-		if ok {
-			continue
-		}
+	i := 0
+	for i < len(runes) {
 		closingBrackets := make([]rune, 0)
 		opening := isOpening(runes[i])
 		if opening {
@@ -81,7 +75,6 @@ func isValid(s string) bool {
 		j := i + 1
 		for j < len(runes) {
 			next := runes[j]
-			visited[j] = next
 			if isOpening(next) {
 				closingBrackets = append(closingBrackets, getClosingBracket(next))
 			} else {
@@ -105,6 +98,7 @@ func isValid(s string) bool {
 				return false
 			}
 		}
+		i = j + 1
 	}
 	return true
 }
