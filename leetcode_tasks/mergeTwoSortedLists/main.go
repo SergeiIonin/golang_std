@@ -12,7 +12,6 @@ func main() {
 }
 
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	///
 	if list1 == nil {
 		if list2 == nil {
 			return nil
@@ -22,80 +21,63 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	} else if list2 == nil {
 		return list1
 	}
-	///
 	val1_0 := list1.Val
 	val2_0 := list2.Val
 	var merged *ListNode
 	if val1_0 < val2_0 {
-		cur := val1_0
 		merged = &ListNode{
-			cur,
+			val1_0,
 			nil,
 		}
 		list1 = list1.Next
 	} else {
-		cur := val2_0
 		merged = &ListNode{
-			cur,
+			val2_0,
 			nil,
 		}
 		list2 = list2.Next
 	}
-	///
+
 	var val1 int
 	var val2 int
 	next := merged
 
-	for list1 != nil || list2 != nil { // list1.Next != nil && list2.Next != nil
+	for list1 != nil || list2 != nil {
 		if list1 == nil {
 			val2 = list2.Val
-			cur := val2
-			upd := &ListNode{
-				cur,
+			next.Next = &ListNode{
+				val2,
 				nil,
 			}
-			updateNext(next, upd)
 			list2 = list2.Next
 		} else if list2 == nil {
 			val1 = list1.Val
-			cur := val1
-			upd := &ListNode{
-				cur,
+			next.Next = &ListNode{
+				val1,
 				nil,
 			}
-			updateNext(next, upd)
 			list1 = list1.Next
 		} else {
 			val1 := list1.Val
 			val2 := list2.Val
 
 			if val1 < val2 {
-				cur := val1
-				upd := &ListNode{
-					cur,
+				next.Next = &ListNode{
+					val1,
 					nil,
 				}
-				updateNext(next, upd)
 				list1 = list1.Next
 			} else {
-				cur := val2
-				upd := &ListNode{
-					cur,
+				next.Next = &ListNode{
+					val2,
 					nil,
 				}
-				updateNext(next, upd)
 				list2 = list2.Next
 			}
 		}
 		next = next.Next
 	}
-	///
 	return merged
-}
-
-func updateNext(next *ListNode, upd *ListNode) *ListNode {
-	next.Next = upd
-	return next
 }
 
 type ListNode struct {
