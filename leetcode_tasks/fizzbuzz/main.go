@@ -29,3 +29,32 @@ func fizzBuzz(n int) []string {
 
 	return res
 }
+
+// This solution is less performant:
+// func fizzBuzz(n int) []string {
+
+//     if n == 0 {
+//         return []string{}
+//     }
+
+//     res := make([]string, n)
+
+//     i := 2 // 3
+//     j := 4 // 5
+
+//     for l:=0; l<n; l++ {
+//         for i<n {
+//             res[i] += "Fizz"
+// 			i+=3
+//         }
+// 		for j<n {
+// 			res[j] += "Buzz"
+// 			j+=5
+// 		}
+//         if res[l] == "" {
+//             res[l] = fmt.Sprintf("%d", l+1)
+//         }
+//     }
+
+//     return res
+// }
