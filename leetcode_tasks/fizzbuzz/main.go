@@ -3,7 +3,8 @@ package main
 import "fmt"
 
 func main() {
-
+	fmt.Println(fizzBuzz(15))
+	fmt.Println(fizzBuzz(30))
 }
 
 func fizzBuzz(n int) []string {
@@ -14,29 +15,15 @@ func fizzBuzz(n int) []string {
 
 	res := make([]string, n)
 
-	i := 2  // 3
-	j := 4  // 5
-	k := 14 // 15
-
-	for l := 0; l < n; l++ {
-		if k < n {
-			res[k] = "FizzBuzz"
-			k += 15
+	for i := 0; i < n; i++ {
+		if (i+1)%3 == 0 {
+			res[i] += "Fizz"
 		}
-		if j < n {
-			if res[j] == "" {
-				res[j] = "Buzz"
-			}
-			j += 5
+		if (i+1)%5 == 0 {
+			res[i] += "Bazz" // NB use += for strings
 		}
-		if i < n {
-			if res[i] == "" {
-				res[i] = "Fizz"
-			}
-			i += 3
-		}
-		if res[l] == "" {
-			res[l] = fmt.Sprintf("%d", l+1)
+		if res[i] == "" {
+			res[i] = fmt.Sprintf("%d", i+1)
 		}
 	}
 
