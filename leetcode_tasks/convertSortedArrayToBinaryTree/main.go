@@ -10,7 +10,7 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-// beats 53.9% RT and 74.83% Mem
+// beats 100% RT and 74.83% Mem
 func sortedArrayToBST(nums []int) *TreeNode {
 	size := len(nums)
 
@@ -34,28 +34,36 @@ func sortedArrayToBST(nums []int) *TreeNode {
 		}
 	} else {
 		var root *TreeNode
+		var middle int
 		var left []int
 		var right []int
 
 		if size%2 != 0 {
+			middle = nums[size/2]
 			left = nums[:size/2]
 			right = nums[size/2+1:]
-
-			root = &TreeNode{
-				Val:   nums[size/2],
-				Left:  sortedArrayToBST(left),
-				Right: sortedArrayToBST(right),
-			}
 		} else {
+			middle = nums[size/2-1]
 			left = nums[:size/2-1]
 			right = nums[size/2:]
-
-			root = &TreeNode{
-				Val:   nums[size/2-1],
-				Left:  sortedArrayToBST(left),
-				Right: sortedArrayToBST(right),
-			}
+		}
+		root = &TreeNode{
+			Val:   middle,
+			Left:  sortedArrayToBST(left),
+			Right: sortedArrayToBST(right),
 		}
 		return root
 	}
 }
+
+// less verbose solution from leetcode:
+// func sortedArrayToBST(nums []int) *TreeNode {
+//     if len(nums) == 0{
+//         return nil
+//     }
+//     mid_node := len(nums) / 2
+
+//     tree := &TreeNode{Val:nums[mid_node], Left:sortedArrayToBST(nums[:mid_node]), Right:sortedArrayToBST(nums[mid_node+1:])}
+//     return tree
+
+// }
