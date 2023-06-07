@@ -38,3 +38,29 @@ func maxProfit(prices []int) int {
 	}
 	return diffMax
 }
+
+// this solution from leetcode is really good:
+// func maxProfit(prices []int) int {
+//     res, min := 0, prices[0]
+//     for i:=1;i<len(prices);i++ {
+//         res = maxV(res, prices[i]-min)
+//         min = minV(min, prices[i])
+//     }
+//     return res
+// }
+
+// func minV(i, j int) int {
+//     if i<j{
+//         return i
+//     }else {
+//         return j
+//     }
+// }
+
+// func maxV(i, j int) int {
+//     if i>j{
+//         return i
+//     }else {
+//         return j
+//     }
+// }
