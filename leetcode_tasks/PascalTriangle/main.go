@@ -15,12 +15,10 @@ func generate(numRows int) [][]int {
 		prev := accum[i-1]
 		lenNext := len(prev) + 1
 		next := make([]int, lenNext)
-		for j := 0; j < lenNext; j++ {
-			if j == 0 || j == lenNext-1 {
-				next[j] = 1
-			} else {
-				next[j] = prev[j-1] + prev[j]
-			}
+		next[0] = 1
+		next[lenNext-1] = 1
+		for j := 1; j < lenNext-1; j++ {
+			next[j] = prev[j-1] + prev[j]
 		}
 		accum[i] = next
 	}
