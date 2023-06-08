@@ -11,28 +11,27 @@ import "fmt"
 
 func main() {
 	in0 := []string{"eat", "tea", "tan", "ate", "nat", "bat"} //Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
-	r0 := groupAnagrams(in0)
+	r0 := groupAnagrams_(in0)
 	fmt.Println(r0)
 
 	in1 := []string{""}
-	r1 := groupAnagrams(in1)
+	r1 := groupAnagrams_(in1)
 	fmt.Println(r1)
 
 	in2 := []string{"a"}
-	r2 := groupAnagrams(in2)
+	r2 := groupAnagrams_(in2)
 	fmt.Println(r2)
 
 	in3 := []string{"ac", "c"} // [["c"],["ac"]]
-	r3 := groupAnagrams(in3)
+	r3 := groupAnagrams_(in3)
 	fmt.Println(r3)
 }
 
-// it works but doesn't perform very well, event poorly than the solution w/ map, bc the overhead for
-// array (frequency array) seems to be bigger
+// it works but doesn't perform very well
 func groupAnagrams(strs []string) [][]string {
 
 	anagrams := make([][]string, 0, len(strs))
-	var mem []rune
+	var hash map[rune]int
 	added := make(map[int]struct{})
 	k := 0
 
@@ -43,7 +42,7 @@ func groupAnagrams(strs []string) [][]string {
 		}
 		anagrams = append(anagrams, []string{strs[i]})
 		k = len(anagrams) - 1
-		mem = memoizeStr(strs[i])
+		hash = hashifyStr(strs[i])
 		for j := i + 1; j < len(strs); j++ {
 			_, ok := added[j]
 			if ok {
@@ -52,8 +51,8 @@ func groupAnagrams(strs []string) [][]string {
 			if len(strs[i]) != len(strs[j]) {
 				continue
 			}
-			m := copyMem(mem)
-			if isAnagram(m, strs[j]) {
+			h := copyMap(hash)
+			if isAnagram(h, strs[j]) {
 				added[j] = struct{}{}
 				anagrams[k] = append(anagrams[k], strs[j])
 			}
@@ -63,27 +62,54 @@ func groupAnagrams(strs []string) [][]string {
 	return anagrams
 }
 
-func memoizeStr(str string) []rune {
-	m := make([]rune, 122) // bc all letters are english lowercase
-	for _, r := range str {
-		m[r]++
+func hashifyStr(str string) map[rune]int {
+	h := make(map[rune]int, len(str))
+	runes := []rune(str)
+	for i := 0; i < len(runes); i++ {
+		h[runes[i]]++
 	}
-	return m
+	return h
 }
 
-func copyMem(src []rune) []rune {
-	dst := make([]rune, len(src))
-	copy(dst, src)
+func copyMap(src map[rune]int) map[rune]int {
+	dst := make(map[rune]int, len(src))
+	for k, v := range src {
+		dst[k] = v
+	}
 	return dst
 }
 
-func isAnagram(m []rune, str string) bool {
-	for _, r := range str {
-		res := m[r]
-		if res == 0 {
+func isAnagram(h map[rune]int, str string) bool {
+	runes := []rune(str)
+	for i := 0; i < len(runes); i++ {
+		h[runes[i]]--
+		if h[runes[i]] < 0 {
 			return false
 		}
-		m[r]--
 	}
 	return true
+}
+
+// this is based on the most performant solution on leetcode
+
+func groupAnagrams_(strs []string) [][]string {
+	hash := make(map[[26]byte][]string, len(strs))
+	for _, s := range strs {
+		norm := normalize(s)
+		hash[norm] = append(hash[norm], s)
+	}
+	res := make([][]string, 0, len(strs))
+	for _, strs := range hash {
+		res = append(res, strs)
+	}
+	return res
+}
+
+func normalize(str string) [26]byte {
+	res := [26]byte{}
+	for _, r := range str {
+		j := r - 'a'
+		res[j]++
+	}
+	return res
 }
