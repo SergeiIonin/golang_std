@@ -27,11 +27,12 @@ func main() {
 	fmt.Println(r3)
 }
 
-// it works but doesn't perform very well
+// it works but doesn't perform very well, event poorly than the solution w/ map, bc the overhead for
+// array (frequency array) seems to be bigger
 func groupAnagrams(strs []string) [][]string {
 
 	anagrams := make([][]string, 0, len(strs))
-	var hash map[rune]int
+	var mem []rune
 	added := make(map[int]struct{})
 	k := 0
 
@@ -42,7 +43,7 @@ func groupAnagrams(strs []string) [][]string {
 		}
 		anagrams = append(anagrams, []string{strs[i]})
 		k = len(anagrams) - 1
-		hash = hashifyStr(strs[i])
+		mem = memoizeStr(strs[i])
 		for j := i + 1; j < len(strs); j++ {
 			_, ok := added[j]
 			if ok {
@@ -51,8 +52,8 @@ func groupAnagrams(strs []string) [][]string {
 			if len(strs[i]) != len(strs[j]) {
 				continue
 			}
-			h := copyMap(hash)
-			if isAnagram(h, strs[j]) {
+			m := copyMem(mem)
+			if isAnagram(m, strs[j]) {
 				added[j] = struct{}{}
 				anagrams[k] = append(anagrams[k], strs[j])
 			}
@@ -62,32 +63,27 @@ func groupAnagrams(strs []string) [][]string {
 	return anagrams
 }
 
-func hashifyStr(str string) map[rune]int {
-	h := make(map[rune]int)
-	runes := []rune(str)
-	for i := 0; i < len(runes); i++ {
-		h[runes[i]]++
+func memoizeStr(str string) []rune {
+	m := make([]rune, 122) // bc all letters are english lowercase
+	for _, r := range str {
+		m[r]++
 	}
-	return h
+	return m
 }
 
-func copyMap(src map[rune]int) map[rune]int {
-	dst := make(map[rune]int, len(src))
-	for k, v := range src {
-		dst[k] = v
-	}
+func copyMem(src []rune) []rune {
+	dst := make([]rune, len(src))
+	copy(dst, src)
 	return dst
 }
 
-func isAnagram(h map[rune]int, str string) bool {
-	runes := []rune(str)
-	for i := 0; i < len(runes); i++ {
-		v, ok := h[runes[i]]
-		if ok && v > 0 {
-			h[runes[i]]--
-		} else {
+func isAnagram(m []rune, str string) bool {
+	for _, r := range str {
+		res := m[r]
+		if res == 0 {
 			return false
 		}
+		m[r]--
 	}
 	return true
 }
