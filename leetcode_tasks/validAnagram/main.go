@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // https://leetcode.com/problems/valid-anagram
 
 // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
@@ -8,7 +10,7 @@ package main
 // typically using all the original letters exactly once.
 
 func main() {
-
+	fmt.Println(isAnagram("ac", "c"))
 }
 
 func isAnagram(s string, t string) bool {
