@@ -17,13 +17,14 @@ func singleNumber(nums []int) int {
 }
 
 // the best(?) solution from leetcode is
-func singleNumber_(nums []int) int {
-	res := 0
-	for i := range nums {
-		res = res ^ nums[i]
-	}
-	return res
-}
+
+// func singleNumber_(nums []int) int {
+// 	res := 0
+// 	for i := range nums {
+// 		res = res ^ nums[i]
+// 	}
+// 	return res
+// }
 
 // that's because ^ (XOR) satisfies the following props:
 // bit1 ^ bit2 = 1 if and only if ONLY ONE bit is 1
