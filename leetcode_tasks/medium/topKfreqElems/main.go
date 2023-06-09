@@ -74,7 +74,7 @@ func (h *MaxHeap) Pop() interface{} {
 //     for key, freq := range numsMap {
 //         freqMap[freq] = append(freqMap[freq], key)
 //     }
-
+// we can use the property that frequency values are bounded within [0,len(nums)]
 // 	for i := len(nums); len(result) != k; i-- {
 // 		for _, n := range freqMap[i] {
 // 			if len(result) != k {
