@@ -48,7 +48,7 @@ func longestConsecutive(nums []int) int {
 
 	var elem int
 	maxIndex := len(nums) - 1
-	count := 2
+	count := 2 // this count shows how many times we can visit indexMin from which we're starting
 
 	for count != 0 {
 		if i == indexMin {
@@ -99,4 +99,27 @@ func getIndex(maxIndex, currentIndex int) int {
 	} else {
 		return currentIndex - maxIndex - 1
 	}
+}
+
+// this is based on the most perfromant solution on leetcode
+func longestConsecutive_(nums []int) int {
+	hashmap := make(map[int]bool, len(nums))
+	for _, v := range nums {
+		hashmap[v] = true
+	}
+	maxLength := 0
+	for num := range hashmap {
+		if _, ok := hashmap[num-1]; !ok {
+			length := 1
+			next := num + 1
+			for hashmap[next] {
+				length++
+				next = next + 1
+			}
+			if length > maxLength {
+				maxLength = length
+			}
+		}
+	}
+	return maxLength
 }
