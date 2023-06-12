@@ -57,19 +57,20 @@ func longestConsecutive(nums []int) int {
 
 		num := nums[i]
 
-		_, ok := hashmap[num]
+		v, _ := hashmap[num]
 		next := num + maxLength
 		if next > max {
 			i = getIndex(maxIndex, i+1)
 			continue
 		}
 		_, hasLeastUpperBound := hashmap[next]
-		if ok && hasLeastUpperBound {
+		if v > 0 && hasLeastUpperBound {
 			elem = num
 
 			for {
 				_, ok := hashmap[elem]
 				if ok {
+					hashmap[elem]--
 					length++
 					elem++
 				} else {
