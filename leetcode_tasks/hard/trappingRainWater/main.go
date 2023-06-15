@@ -38,6 +38,8 @@ func main() {
 	r4 := trap(in4)
 	fmt.Println(r4) // 4
 
+	fmt.Println("=======")
+
 	in5 := []int{1, 2, 1, 2, 3}
 	r5 := trap(in5)
 	fmt.Println(r5) // 1
@@ -92,10 +94,6 @@ func vol(heights []int) int {
 			v = v - h
 		}
 	}
-	// if v < 0 {
-	// 	v = volLast(heights)
-	// }
-	// fmt.Println("v = ", v)
 	return v
 }
 
@@ -118,3 +116,36 @@ func min(l, r int) int {
 		return r
 	}
 }
+
+// most performant leetcode solution
+// if max_l < max_r, then max_l is definitely the lowest board on the left
+// we can use max_l to calculate the increase even though there's possibly
+// another value on the right kk > max_r, max_l < max_r < kk, just need to
+// use max_l for sure
+// func trap(height []int) int {
+//     if len(height) < 3 {
+//         return 0
+//     }
+
+//     var max_l int = height[0]
+//     var max_r int = height[len(height)-1]
+//     var l int = 0
+//     var r int = len(height)-1
+//     var count int = 0
+//     for ; l < r; {
+//         if max_l < max_r {
+//             count += max_l - height[l]
+//             l++
+//             if max_l < height[l] {
+//                 max_l = height[l]
+//             }
+//         } else {    // max_r > max_l
+//             count += max_r - height[r]
+//             r--
+//             if max_r < height[r] {
+//                 max_r = height[r]
+//             }
+//         }
+//     }
+//     return count
+// }
