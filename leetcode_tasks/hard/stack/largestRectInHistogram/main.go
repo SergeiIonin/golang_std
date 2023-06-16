@@ -8,66 +8,50 @@ import "fmt"
 // return the area of the largest rectangle in the histogram.
 
 func main() {
-	// in0 := []int{3, 2, 1, 2, 3, 4}
-	// r0 := largestRectangleArea(in0)
-	// fmt.Println(r0) // 6
+	in0 := []int{3, 2, 1, 2, 3, 4}
+	r0 := largestRectangleArea(in0)
+	fmt.Println(r0) // 6
 
-	// in1 := []int{2, 1, 5, 6, 2, 3}
-	// r1 := largestRectangleArea(in1)
-	// fmt.Println(r1) // 10
+	in1 := []int{2, 1, 5, 6, 2, 3}
+	r1 := largestRectangleArea(in1)
+	fmt.Println(r1) // 10
 
 	in2 := []int{5, 5, 1, 7, 1, 1, 5, 2, 7, 6}
 	r2 := largestRectangleArea(in2)
 	fmt.Println(r2) // 12
-	// 5,5,1,7,1,1,5,2,7,6
 }
 
+type StackValue struct {
+	index  int
+	height int
+}
+
+// neetcode solution https://github.com/neetcode-gh/leetcode/blob/main/go/0084-largest-rectangle-in-histogram.go
 func largestRectangleArea(heights []int) int {
-	stack := make([]int, 0, len(heights))
-	occurences := make([]int, len(heights))
+	stack := []StackValue{} // pair: {index, height}
+	maxArea := 0
+	var start int
 
-	for i := 0; i < len(heights); i++ {
-		if len(stack) == 0 || heights[i] >= heights[stack[len(stack)-1]] {
-			stack = append(stack, i)
-			occurences[i]++
-		} else if heights[i] < heights[stack[len(stack)-1]] {
-
-			n := 0
-			for j := len(stack) - 1; j >= 0; j-- {
-				index := stack[j]
-				occurences[index] += (len(stack) - j - 1)
-				if heights[index] > heights[i] {
-					n++
-				}
-			}
-
-			occurences[i] = 1
-			for j := i - 1; j >= 0; j-- {
-				if heights[j] >= heights[i] {
-					occurences[i]++
-				} else {
-					break
-				}
-			}
-
-			//stack = stack[:len(stack)-n]
-			stack = append([]int{}, i)
+	for i, h := range heights {
+		start = i
+		for len(stack) != 0 && stack[len(stack)-1].height > h {
+			index, height := stack[len(stack)-1].index, stack[len(stack)-1].height
+			stack = stack[0 : len(stack)-1] //pop top from stack
+			maxArea = max(maxArea, height*(i-index))
+			start = index
 		}
+		stack = append(stack, StackValue{start, h})
 	}
 
-	for i := len(stack) - 1; i >= 0; i-- {
-		index := stack[i]
-		occurences[index] += (len(stack) - i - 1)
+	for _, h := range stack {
+		maxArea = max(maxArea, h.height*(len(heights)-h.index))
 	}
+	return maxArea
+}
 
-	max := 0
-
-	for i := 0; i < len(heights); i++ {
-		s := heights[i] * occurences[i]
-		if s > max {
-			max = s
-		}
+func max(a, b int) int {
+	if a > b {
+		return a
 	}
-
-	return max
+	return b
 }
