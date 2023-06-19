@@ -26,10 +26,11 @@ func merge(nums1 []int, nums2 []int, res []int) []int {
 		} else if nums2[size2-1] <= nums1[0] {
 			return append(nums2, nums1...)
 		} else {
+			i := 0
 			j := 0
 			app1 := []int{}
 			app2 := []int{}
-			for i := 0; i < len(nums1); i++ {
+			for i < size1 {
 				elem1 := nums1[i]
 				for j < size2 {
 					if nums2[j] <= elem1 {
@@ -45,13 +46,16 @@ func merge(nums1 []int, nums2 []int, res []int) []int {
 							app2 = []int{}
 						}
 						app1 = append(app1, nums1[i])
+						i++
 						break
 					}
 				}
 				if j == size2 {
+					res = append(res, app2...)
 					return append(res, nums1[i:]...)
 				}
 			}
+			res = append(res, app1...)
 			return append(res, nums2[j:]...)
 		}
 	}
