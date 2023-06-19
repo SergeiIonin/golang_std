@@ -38,7 +38,10 @@ func largestRectangleArea(heights []int) int {
 			index, height := stack[len(stack)-1].index, stack[len(stack)-1].height
 			stack = stack[0 : len(stack)-1] //pop top from stack
 			maxArea = max(maxArea, height*(i-index))
-			start = index
+			start = index // NB the height which is less than previous stack value is shifted to the left and finally it'll be on the stack at this pos,
+			// e.g. for [2, 1, 5, 6, 2, 3] the remained stack is
+			// [(index:0, height:1), (index:2, height:2), (index:5, height:3)]
+			// after that we can calculate the areas w/ heights 1 (width=6-0), 2 (width=6-2), 3 (width=6-5)
 		}
 		stack = append(stack, StackValue{start, h})
 	}
