@@ -57,6 +57,7 @@ func minEatingSpeed(piles []int, h int) int {
 			if piles[0]%h != 0 {
 				t += 1
 			}
+			return t
 		}
 	}
 	minRate := 1
