@@ -32,6 +32,30 @@ func TestMinWindow(t *testing.T) {
 			"",
 			"[4] two different single runes",
 		},
+		{
+			"ab",
+			"a",
+			"a",
+			"[5] ab and a",
+		},
+		{
+			"ab",
+			"b",
+			"b",
+			"[6] ab and b",
+		},
+		{
+			"bdab",
+			"ab",
+			"ab",
+			"[7] bdab and ab",
+		},
+		{
+			"abc",
+			"ac",
+			"abc",
+			"[8] abc and ac",
+		},
 	}
 	for _, input := range inputs {
 		t.Run(input.name, func(t *testing.T) {

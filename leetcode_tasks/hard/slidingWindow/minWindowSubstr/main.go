@@ -13,8 +13,8 @@ import "fmt"
 func main() {
 	// s := "ADOBECODEBANC"
 	// t := "ABC"
-	s := "a"
-	t := "a"
+	s := "abc"
+	t := "ac"
 	r := minWindow(s, t)
 	fmt.Println(r)
 }
@@ -24,60 +24,86 @@ func minWindow(s string, t string) string {
 	runes_t := []rune(t)
 
 	hashmap_t := make(map[rune]int, len(runes_t))
-
 	hashmap_res := make(map[rune]int, len(runes_t))
+
+	if len(runes_s) == 1 && len(runes_t) == 1 {
+		if runes_s[0] == runes_t[0] {
+			return s
+		}
+		return ""
+	}
 
 	for _, r := range runes_t {
 		hashmap_t[r]++
 		hashmap_res[r] = 0
 	}
 
-	i := 0
-	j := len(runes_t) - 1
-	start := 0
-	end := len(runes_s) + 1
-	size := len(runes_s) + 1
-	substr := runes_s[i : j+1]
+	i := -1
+	valid := false
+	j := 0
 
-	for _, r := range substr {
-		if _, ok := hashmap_t[r]; ok {
-			hashmap_res[r]++
+	// we fill the hashmap_res and start and end indexes
+	for ; j < len(runes_s); j++ {
+		if _, ok := hashmap_t[runes_s[j]]; ok {
+			if i == -1 {
+				i = j
+			}
+			hashmap_res[runes_s[j]]++
+		}
+		if (j-i+1) >= len(runes_t) && isFull(hashmap_res, hashmap_t) { // we can do better, e.g. countdown the elements in the copy of hashmap_t
+			valid = true
+			break
 		}
 	}
 
+	start := i
+	end := j + 1
+	size := end - start
+
+	// at this point hashmap_res is full, we should just keep it so
 	for j < len(runes_s) && i <= j {
-		if isFull(hashmap_res, hashmap_t) {
-			if (j + 1 - i) < size {
-				start = i
-				end = j + 1
-				size = end - start
-				if size == len(runes_t) {
-					break
-				}
-			}
-			if _, ok := hashmap_res[runes_s[i]]; ok {
-				hashmap_res[runes_s[i]]--
-			}
-			k := i + 1
-			for ; k < j; k++ {
-				if _, ok := hashmap_t[runes_s[k]]; ok {
-					break
-				}
-			}
-			i = k
-		} else {
+
+		removed := runes_s[i]
+		hashmap_res[removed]--
+		occ := hashmap_res[removed]
+		if occ < hashmap_t[removed] { // if hashmap_res is no longer full, add elems
 			k := j + 1
+			found := false // indicator that the removed element is found
 			for ; k < len(runes_s); k++ {
+				if runes_s[k] == removed {
+					hashmap_res[removed]++
+					found = true
+					break
+				}
 				if _, ok := hashmap_t[runes_s[k]]; ok {
 					hashmap_res[runes_s[k]]++
-					break
 				}
 			}
-			j = k
+			if found {
+				j = k
+			} else {
+				break // if the removed rune isn't found, we should exit
+			}
+		}
+		k := i + 1
+		for ; k < j; k++ {
+			if _, ok := hashmap_t[runes_s[k]]; ok { // move left index (i) to the next rune presented in the "t"
+				break
+			}
+		}
+		i = k
+
+		if (j + 1 - i) < size {
+			start = i
+			end = j + 1
+			size = end - start
+			if size == len(runes_t) {
+				break
+			}
 		}
 	}
 
-	if end <= len(runes_s) {
+	if end <= len(runes_s) && valid {
 		return string(runes_s[start:end])
 	} else {
 		return ""
@@ -93,84 +119,3 @@ func isFull(hashmap map[rune]int, base map[rune]int) bool {
 	}
 	return true
 }
-
-// func minWindow(s string, t string) string {
-// 	runes_s := []rune(s)
-// 	runes_t := []rune(t)
-
-// 	hashmap_s := make(map[rune][]int, len(runes_s))
-// 	hashmap_t := make(map[rune]int, len(runes_t))
-
-// 	for _, r := range runes_t {
-// 		hashmap_t[r]++
-// 	}
-
-// 	for i, r := range runes_s {
-// 		if _, ok := hashmap_t[r]; ok {
-// 			hashmap_s[r] = append(hashmap_s[r], i)
-// 		}
-// 	}
-
-// 	i := 0
-// 	j := len(runes_t) - 1
-// 	start := 0
-// 	end := len(runes_s) + 1
-// 	size := len(runes_s) + 1
-
-// 	for j < len(runes_s) {
-// 		if containsAllElems(hashmap_t, hashmap_s, i, j+1) {
-// 			if (j + 1 - i) < size {
-// 				start = i
-// 				end = j + 1
-// 				size = j + 1 - i
-// 				if size == len(runes_t) {
-// 					break
-// 				}
-// 			}
-
-// 			k := i + 1
-// 			for ; k < len(runes_s); k++ {
-// 				if _, ok := hashmap_t[runes_s[k]]; ok {
-// 					break
-// 				}
-// 			}
-// 			i = k
-
-// 		} else {
-// 			k := j + 1
-// 			for ; k < len(runes_s); k++ {
-// 				if _, ok := hashmap_t[runes_s[k]]; ok {
-// 					break
-// 				}
-// 			}
-// 			j = k
-// 		}
-// 	}
-// 	if end <= len(runes_s) {
-// 		return string(runes_s[start:end])
-// 	} else {
-// 		return ""
-// 	}
-// }
-
-// func containsAllElems(hashmap_t map[rune]int, hashmap_s map[rune][]int, start int, end int) bool {
-// 	for r, occ := range hashmap_t {
-// 		if slice, ok := hashmap_s[r]; ok && len(slice) >= occ {
-// 			count := occ
-// 			for _, ind := range slice {
-// 				if ind >= start && ind < end {
-// 					count--
-// 					if count == 0 {
-// 						break
-// 					}
-// 				}
-// 			}
-// 			if count > 0 {
-// 				return false
-// 			}
-// 		} else {
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
