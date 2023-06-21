@@ -23,20 +23,47 @@ func main() {
 }
 
 // Given the head of a singly linked list, reverse the list, and return the reversed list.
+// the intuition behind this task is to use 3 pointers: prev, cur, next
+// prev is nil, cur is head, next is cur.Next
+// on each iteration we change the direction of the pointer
+// cur.Next = prev
+// prev = cur
+// cur = next
+// next = next.Next
+// we return prev
 
 func reverseList(head *ListNode) *ListNode {
 	if head == nil {
 		return nil
 	}
+
 	var prev *ListNode
-	curr := head
-	for curr != nil {
-		next := curr.Next // save the next node
-		curr.Next = prev  // reverse the current node
-		prev = curr       // move prev to curr
-		curr = next       // move curr to next
+	cur := head
+	for cur != nil {
+		next := cur.Next
+		cur.Next = prev
+		prev = cur
+		cur = next
 	}
 	return prev
+
+}
+
+// the same task but with recursion
+func reverseListRec(node *ListNode) *ListNode {
+	if node == nil {
+		return nil
+	}
+	return reverseListIter(node, nil)
+}
+
+func reverseListIter(cur *ListNode, prev *ListNode) *ListNode {
+	if cur == nil {
+		return prev
+	}
+	next := cur.Next
+	cur.Next = prev
+	return reverseListIter(next, cur)
 }
 
 type ListNode struct {
@@ -58,7 +85,7 @@ type TestData struct {
 
 func testReverseList(testData []TestData) {
 	for _, test := range testData {
-		result := reverseList(test.input)
+		result := reverseListRec(test.input)
 		if !isSame(result, test.expected) {
 			fmt.Println("test", test.name, "failed")
 			fmt.Println("expected", test.expected, "got", result)
