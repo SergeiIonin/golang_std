@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// todo use sort.Ints(arr) instead!
 type fence []int
 
 func (f fence) Len() int {
