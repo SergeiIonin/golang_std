@@ -73,9 +73,3 @@ func isAlphanumeric(r rune) bool {
 	}
 	return false
 }
-
-// git command to revert changes in this file
-// git checkout -- leetcode_tasks/easy/validPalindrome/main.go
-
-// git command to rollback changes in this file
-// git reset HEAD leetcode_tasks/easy/validPalindrome/main.go
