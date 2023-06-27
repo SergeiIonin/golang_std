@@ -44,42 +44,24 @@ func main() {
 
 // it works but pretty slow and consumes a lot of memory
 func copyRandomList(head *Node) *Node {
-	buf := make([]*Node, 0, 10)
-	bufCopy := make([]*Node, 0, 10)
+	hashmap := make(map[*Node]*Node)
 
-	map_rand2sources := make(map[*Node][]int)
-
-	ind := 0
 	cur := head
 	for cur != nil {
-		rand := cur.Random
-		map_rand2sources[rand] = append(map_rand2sources[rand], ind)
-
-		buf = append(buf, cur)
-
-		n := &Node{cur.Val, nil, nil}
-		bufCopy = append(bufCopy, n)
-		if ind > 0 {
-			bufCopy[ind-1].Next = n
-		}
-
+		hashmap[cur] = &Node{cur.Val, nil, nil}
 		cur = cur.Next
-		ind++
 	}
 
-	for i, node := range buf {
-		indexesForRand := map_rand2sources[node]
+	cur = head
 
-		if len(indexesForRand) == 0 {
-			continue
-		}
-
-		for _, index := range indexesForRand {
-			bufCopy[index].Random = bufCopy[i]
-		}
+	for cur != nil {
+		copy := hashmap[cur]
+		copy.Next = hashmap[cur.Next]
+		copy.Random = hashmap[cur.Random]
+		cur = cur.Next
 	}
 
-	return bufCopy[0]
+	return hashmap[head]
 }
 
 type Node struct {
