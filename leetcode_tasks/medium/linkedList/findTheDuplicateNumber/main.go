@@ -1,6 +1,8 @@
 package main
 
-import "sort"
+import (
+	"fmt"
+)
 
 // https://leetcode.com/problems/find-the-duplicate-number
 
@@ -12,15 +14,29 @@ import "sort"
 
 func main() {
 
+	in0 := []int{1, 3, 4, 2, 2}
+	fmt.Println(findDuplicate(in0)) // 2
+
+	in1 := []int{3, 1, 3, 4, 2}
+	fmt.Println(findDuplicate(in1)) // 3
+
 }
 
-// it works, but it's very slow and even not very good memory-wise
+// here's the impl of Hare and Tortoise algorithm
 func findDuplicate(nums []int) int {
-	sort.Ints(nums)
-	for i := range nums {
-		if nums[i] == nums[i+1] {
-			return nums[i]
-		}
+	slow, fast := nums[0], nums[nums[0]]
+
+	for slow != fast {
+		slow = nums[slow]
+		fast = nums[nums[fast]]
 	}
-	return -1
+
+	slow = 0
+
+	for slow != fast {
+		slow = nums[slow]
+		fast = nums[fast]
+	}
+
+	return slow
 }
