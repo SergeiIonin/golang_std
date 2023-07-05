@@ -5,13 +5,20 @@ import "fmt"
 func main() {
 	initial := &ListNode{2, &ListNode{4, &ListNode{3, nil}}}
 
-	copy := deepCopy(initial)
+	copy := deepCopyListNode(initial)
 
 	printListNode(copy)
 	copy.Next = &ListNode{5, nil}
 
 	printListNode(copy)
 	printListNode(initial) // initial doesn't change
+}
+
+func deepCopyListNode(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	return &ListNode{head.Val, deepCopyListNode(head.Next)}
 }
 
 func deepCopy(head *ListNode) *ListNode {
