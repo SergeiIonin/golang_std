@@ -32,6 +32,7 @@ func carFleet(target int, position []int, speed []int) int {
 		posWithSpeed[i] = [2]int{position[i], speed[i]}
 	}
 
+	// sort by position in descending order
 	sort.Slice(posWithSpeed, func(i, j int) bool {
 		return posWithSpeed[i][0] > posWithSpeed[j][0]
 	})
@@ -48,5 +49,3 @@ func carFleet(target int, position []int, speed []int) int {
 	return len(stack)
 
 }
-
-// pwd of this file is leetcode_tasks/medium/carFleet

@@ -42,7 +42,6 @@ func main() {
 
 }
 
-// it works but pretty slow and consumes a lot of memory
 func copyRandomList(head *Node) *Node {
 	hashmap := make(map[*Node]*Node)
 

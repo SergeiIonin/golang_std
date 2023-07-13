@@ -42,7 +42,7 @@ func minWindow(s string, t string) string {
 	valid := false
 	j := 0
 
-	// we fill the hashmap_res and start and end indexes
+	// we fill the hashmap_res and start, end indexes
 	for ; j < len(runes_s); j++ {
 		if _, ok := hashmap_t[runes_s[j]]; ok {
 			if i == -1 {
