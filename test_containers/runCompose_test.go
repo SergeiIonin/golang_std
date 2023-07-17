@@ -15,7 +15,7 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func TestKafkaConnection(t *testing.T) {
+func TestKafkaConnection(t *testing.T) { // seems to be flacky
 	pwd, _ := os.Getwd()
 	dockerComposeDir := fmt.Sprintf("%s/%s", pwd, "/docker_test/docker-compose.yaml")
 
@@ -31,15 +31,16 @@ func TestKafkaConnection(t *testing.T) {
 	for _, project := range projects {
 		log.Println("project :", project)
 	}
+	assert.NotEmpty(t, projects, "compose.Services()")
 
 	topicConfigs := []kafka.TopicConfig{
 		kafka.TopicConfig{
-			Topic:             "timewindows",
+			Topic:             "topic1",
 			NumPartitions:     1,
 			ReplicationFactor: 1,
 		},
 		kafka.TopicConfig{
-			Topic:             "timewindows_aggregated",
+			Topic:             "topic2",
 			NumPartitions:     1,
 			ReplicationFactor: 1,
 		},
@@ -60,10 +61,6 @@ func TestKafkaConnection(t *testing.T) {
 	}
 
 	conn.CreateTopics(topicConfigs...)
-
-	projects := compose.Services()
-	// assert that the project is not empty
-	assert.NotEmpty(t, projects, "compose.Services()")
 
 	container, err := compose.ServiceContainer(context.TODO(), "kafka")
 	assert.NoError(t, err)
