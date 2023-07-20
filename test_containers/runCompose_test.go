@@ -19,9 +19,16 @@ func TestKafkaConnection(t *testing.T) { // seems to be flacky
 	pwd, _ := os.Getwd()
 	dockerComposeDir := fmt.Sprintf("%s/%s", pwd, "/docker_test/docker-compose.yaml")
 
-	compose, err := tc.NewDockerCompose(dockerComposeDir)
+	identifier := tc.StackIdentifier("kafka_timewindow_test")
+
+	compose, err := tc.NewDockerComposeWith(tc.WithStackFiles(dockerComposeDir), identifier)
 
 	compose.Up(context.TODO())
+
+	// cleanup with docker compose down
+	t.Cleanup(func() {
+		assert.NoError(t, compose.Down(context.Background(), tc.RemoveOrphans(true), tc.RemoveImagesLocal), "compose.Down()")
+	})
 
 	if err != nil {
 		log.Fatal("Failed to create compose: ", err)
@@ -54,7 +61,8 @@ func TestKafkaConnection(t *testing.T) { // seems to be flacky
 
 	brokers := []string{"127.0.0.1:9092"}
 
-	conn, err := kafka.DialLeader(context.Background(), "tcp", brokers[0], "timewindows", 0)
+	conn, err := kafka.Dial("tcp", brokers[0])
+	//conn, err := kafka.DialLeader(context.Background(), "tcp", brokers[0], "timewindows", 0)
 	if err != nil {
 		assert.NoError(t, err)
 		log.Fatal("failed to dial leader:", err)
