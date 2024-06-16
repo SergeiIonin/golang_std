@@ -54,10 +54,19 @@ func TestKafkaMultipleTopicsReader_test(t *testing.T) {
 		}
 	}
 
+	readers := make([]*kafka.Reader, len(topics))
 	for i, topic := range topics {
-		reader := createReader(ctx, topic, fmt.Sprintf("merger_%s_%d", time.Now().String(), i))
+		readers[i] = createReader(ctx, topic, fmt.Sprintf("new_%s_%d", time.Now().String(), i))
+	}
+
+	for _, reader := range readers {
 		go read(reader, &mut)
 	}
+
+	/*for i, topic := range topics {
+		reader := createReader(ctx, topic, fmt.Sprintf("merger_%s_%d", time.Now().String(), i))
+		go read(reader, &mut)
+	}*/
 
 	go func() {
 		select {
