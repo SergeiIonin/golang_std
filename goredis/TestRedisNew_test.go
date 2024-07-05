@@ -38,7 +38,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer redisContainer.Terminate(ctx) // Ensure the container is terminated after the test
 
 	host, err := redisContainer.Host(ctx)
 	if err != nil {
@@ -55,6 +54,8 @@ func init() {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr: redisAddr,
 	})
+
+	time.Sleep(7 * time.Second)
 }
 
 func TestRedisContainer(t *testing.T) {
@@ -68,7 +69,7 @@ func TestRedisContainer(t *testing.T) {
 	t.Run("basic KV operations", func(t *testing.T) {
 		err := redisClient.Ping(ctx).Err()
 		if err != nil {
-			t.Fatal(err)
+			t.Fatalf("Error pinging container: %v", err)
 		}
 
 		err = redisClient.Set(ctx, "key", "value", 0).Err()
@@ -225,5 +226,28 @@ func TestRedisContainer(t *testing.T) {
 
 		assert.Equal(t, "baz", schemaBaz.Subject)
 		assert.Equal(t, 3, schemaBaz.Version)
+	})
+
+	t.Run("add values of different types to redis", func(t *testing.T) {
+		key := "foo"
+		err := redisClient.HSet(ctx, key, "myInt", 1).Err()
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = redisClient.HSet(ctx, key, "myFloat", 1.0).Err()
+		if err != nil {
+			t.Fatal(err)
+		}
+		myInt, err := redisClient.HGet(ctx, key, "myInt").Int()
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, 1, myInt)
+		myFloat, err := redisClient.HGet(ctx, key, "myFloat").Float64()
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert.Equal(t, 1.0, myFloat)
+
 	})
 }
