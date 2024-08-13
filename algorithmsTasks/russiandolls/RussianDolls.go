@@ -5,6 +5,11 @@ import (
 	"sort"
 )
 
+// You are given a list of envelopes with width and height.
+// One envelope can fit into another if and only if both the width and height of one envelope
+// are strictly greater than the width and height of the other envelope. Find the maximum number
+// of envelopes you can Russian doll (i.e., put one inside another).
+
 func main() {
 	testDolls0 := []int{2, 2, 3, 3}                      // 2
 	testDolls1 := []int{1, 2, 2, 3, 4, 5, 6}             // 2
