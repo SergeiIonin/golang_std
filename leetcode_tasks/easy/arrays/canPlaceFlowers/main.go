@@ -12,12 +12,15 @@ func canPlaceFlowers(flowerbed []int, n int) bool {
     if n==0 {
         return true
     }
+
     count := 0
+
     if len(flowerbed)==1 {
         return n==1 && flowerbed[0]==0
     }
 
     sizeInit := len(flowerbed)
+
     cond := func(size int, rem int) bool {
         if size==1 {
             return rem==1
@@ -33,30 +36,28 @@ func canPlaceFlowers(flowerbed []int, n int) bool {
         return false
     }
 
-    for index:=0 ; index < sizeInit && count < n && cond(sizeInit-index, n-count) ; {
-        fmt.Printf("index = %v, count = %d \n", index, count)
-		step := 1
-        if (index==0) {
-            if flowerbed[0]==0 && flowerbed[1]==0 {
-                flowerbed[0]=1
-                count++
-                step += 1            
-            }
-        } else {
-            if (flowerbed[index-1]==0 && flowerbed[index]==0) {
+    initIndex := 1
+
+    if flowerbed[0]==0 && flowerbed[1]==0 {
+		flowerbed[0]=1
+		count++
+        initIndex++    
+	}
+
+    for index:=initIndex ; index < sizeInit && count < n && cond(sizeInit-index, n-count) ; {
+		step := 2
+
+        if (flowerbed[index-1]==0 && flowerbed[index]==0) {
                 if (index == len(flowerbed)-1) {
                         count++
-                        step += 1
                 } else if (flowerbed[index+1]==0) {
                         flowerbed[index]=1
                         count++
-                        step += 1
                 }
-            }
-        }
+        } else if flowerbed[index]==0 {
+				step = 1
+		}
         index += step
-		c := cond(sizeInit-index, n-count)
-		fmt.Printf("count (iter end) = %d, c = %v \n", count, c)
     }
     return count==n
 }
