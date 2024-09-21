@@ -23,7 +23,7 @@ func reverseWords(s string) string {
 
 	r := len(runes)-1
 	l := r-1
-	acc := make([]rune, 0, 5)
+	acc := make([]rune, 0, len(runes))
 
 	for r >= 0 {
 		if runes[r] == ' ' {
