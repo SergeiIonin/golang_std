@@ -8,6 +8,14 @@ func main() {
 	fmt.Printf("res = %v\n", res) // [true, true, true, false, true]
 }
 
+// https://leetcode.com/problems/kids-with-the-greatest-number-of-candies
+/* Constraints:
+
+    n == candies.length
+    2 <= n <= 100
+    1 <= candies[i] <= 100
+    1 <= extraCandies <= 50
+ */
 func kidsWithCandies(candies []int, extraCandies int) []bool {
     // indexes i for which candies[i]+extraCandies >= max, where max is the current max at index i, so we'll need
     // to walk these indexes once more after determination of the absolute max
