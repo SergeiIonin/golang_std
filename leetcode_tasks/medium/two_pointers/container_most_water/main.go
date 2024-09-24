@@ -69,68 +69,64 @@ func readInput(f *os.File) []int {
 	return ints
 }
 
-// https://leetcode.com/problems/container-with-most-water/description/
+/*
+https://leetcode.com/problems/container-with-most-water
+You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+Return the maximum amount of water a container can store.
+Notice that you may not slant the container.
 
-// h = [1,8,6,2,5,4,8,3,7]
-// 		sorted0 = 8
-//		sorted1 = 8
-//		diff = 5
-//		s = min(sorted0, sorted1) * diff // 40
-//
-//
+Example 1:
+Input: height = [1,8,6,2,5,4,8,3,7]
+Output: 49
+Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
 
-func maxArea_(height []int) int {
+Example 2:
+Input: height = [1,1]
+Output: 1
 
-	s := 0
-	sTemp := 0
 
-	i := 0
-	j := len(height) - 1
-
-	for i < j {
-		l := height[i]
-		r := height[j]
-		len := (j - i)
-		if l > r {
-			sTemp = len * r
-			j--
-		} else {
-			sTemp = len * l
-			i++
-		}
-		if sTemp > s {
-			s = sTemp
-		}
-	}
-
-	return s
-}
-
+Constraints:
+    n == height.length
+    2 <= n <= 10^5
+    0 <= height[i] <= 10^4
+*/
 func maxArea(height []int) int {
-	s := 0
+    left := 0
+	right := len(height)-1
 
-	i := 0
-	j := len(height) - 1
-
-	for i <= j {
-		sCur := (j - i) * min(height[i], height[j])
-		if sCur > s {
-			s = sCur
-		}
-		if height[i] > height[j] {
-			j--
+	min := func(a, b int) int {
+		if a <= b {
+			return a
 		} else {
-			i++
+			return b
 		}
 	}
 
-	return s
-}
+	MAX := 10_000
 
-func min(l, r int) int {
-	if l > r {
-		return r
-	} else {
-		return l
+	cond := func(volMax, base int) bool {
+		return base * MAX < volMax
 	}
+
+	vol := 0
+
+	for ; left != right ; {
+		base := right - left
+		if cond(vol, base) {
+			return vol
+		}
+		hL := height[left]
+		hR := height[right]
+		vol_cur := min(hL, hR) * (right - left)
+		if vol_cur > vol {
+			vol = vol_cur
+		}
+		if hL <= hR {
+			left++
+		} else {
+			right--
+		}
+	}
+	return vol
 }
