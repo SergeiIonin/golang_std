@@ -15,6 +15,7 @@ func TestMaxVowels(t *testing.T) {
 		{"Test 2", "aeiou", 2, 2},
 		{"Test 3", "leetcode", 3, 2},
 		{"Test 4", "twfsikrausdeuelcgiupwktszz", 5, 3},
+		{"Test 5", "weallloveyou", 7, 4},
 	}
 
 	for _, tt := range tests {
