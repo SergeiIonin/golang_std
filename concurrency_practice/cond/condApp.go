@@ -18,17 +18,18 @@ func main() {
 	}
 
 	// Listener goroutines
-	f := func(goal int) {
+	f := func(goal int, name string) {
 		donation.cond.L.Lock()
 		for donation.balance < goal {
 			donation.cond.Wait()
+			fmt.Printf("[%s], current value: %d \n", name, donation.balance)
 		}
-		fmt.Printf("%d$ goal reached\n", donation.balance)
+		fmt.Printf("%d goal reached\n", donation.balance)
 		donation.cond.L.Unlock()	
 	}
 
-	go f(10)
-	go f(15)
+	go f(10, "GOAL 10")
+	go f(15, "GOAL 15")
 
 	// Updater goroutine
 	for {
