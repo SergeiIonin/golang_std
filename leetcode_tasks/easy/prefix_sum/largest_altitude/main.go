@@ -22,5 +22,19 @@ n == gain.length
 -100 <= gain[i] <= 100
 */
 func largestAltitude(gain []int) int {
+    max := 0
+    cur := gain[0]
+    if cur > max {
+        max = cur
+    }
+
+    for i := 1; i < len(gain); i++ {
+        cur += gain[i]
+        if cur > max {
+            max = cur
+        }
+    }
+
+    return max
     
 }
